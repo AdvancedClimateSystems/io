@@ -2,7 +2,7 @@
 
 Go packages for pheripheral I/O.
 
-    * [spi][spi]
+* [spi][spi]
 
 ## License
 

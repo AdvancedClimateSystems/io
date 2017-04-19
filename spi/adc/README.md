@@ -1,3 +1,5 @@
+[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/AdvancedClimateSystems/io/spi/adc)
+
 # ADC
 
 Package ADC implements a few Analog Digital Converters (ADC). Communication
@@ -20,7 +22,7 @@ func main() {
 	conn, err := spi.Open(&spi.Devfs{
 		Dev:      "/dev/spidev32766.0",
 		Mode:     spi.Mode0,
-		MaxSpeed: 5000000,
+		MaxSpeed: 3600000,
 	})
 
 	if err != nil {
@@ -42,7 +44,9 @@ func main() {
 	fmt.Printf("read %f Volts from channel 3", v)
 }
 ```
-
 ## Supported ADC's
 
-* MCP3008
+* [MCP3004](http://www.microchip.com/wwwproducts/en/MCP3004)
+* [MCP3008](http://www.microchip.com/wwwproducts/en/MCP3008)
+* [MCP3204](http://www.microchip.com/wwwproducts/en/MCP3204)
+* [MCP3208](http://www.microchip.com/wwwproducts/en/MCP3208)

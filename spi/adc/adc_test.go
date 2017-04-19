@@ -30,7 +30,7 @@ func (c testConn) Tx(w, r []byte) error {
 }
 func (c testConn) Close() error { return nil }
 
-func TestMCP3008(t *testing.T) {
+func TestMCP300x(t *testing.T) {
 	var tests = []struct {
 		resp []byte
 		v    float64
@@ -44,7 +44,7 @@ func TestMCP3008(t *testing.T) {
 	for _, test := range tests {
 		c := testConn{
 			tx: func(w, r []byte) error {
-				assert.Equal(t, []byte{1, 240, 0}, w)
+				assert.Equal(t, []byte{1, 176, 0}, w)
 
 				r[1] = test.resp[0]
 				r[2] = test.resp[1]
@@ -54,14 +54,69 @@ func TestMCP3008(t *testing.T) {
 		}
 
 		con, _ := spi.Open(&testDriver{c})
-		m := MCP3008{
+		mcp3004 := MCP3004{
 			Conn:      con,
 			Vref:      5.0,
 			InputType: SingleEnded,
 		}
 
-		v, _ := m.Read(7)
+		v, _ := mcp3004.Read(3)
 		assert.Equal(t, test.v, v)
+
+		mcp3008 := MCP3008{
+			Conn:      con,
+			Vref:      5.0,
+			InputType: SingleEnded,
+		}
+
+		v, _ = mcp3008.Read(3)
+		assert.Equal(t, test.v, v)
+	}
+}
+
+func TestMCP320x(t *testing.T) {
+	var tests = []struct {
+		resp []byte
+		v    float64
+	}{
+		{[]byte{0, 0}, 0},
+		{[]byte{2, 0}, 0.625},
+		{[]byte{6, 0}, 1.875},
+		{[]byte{1, 13}, 0.328369140625},
+		{[]byte{255, 255}, 4.998779296875},
+	}
+
+	for _, test := range tests {
+		c := testConn{
+			tx: func(w, r []byte) error {
+				assert.Equal(t, []byte{4, 192, 0}, w)
+
+				r[1] = test.resp[0]
+				r[2] = test.resp[1]
+
+				return nil
+			},
+		}
+
+		con, _ := spi.Open(&testDriver{c})
+		mcp3204 := MCP3204{
+			Conn:      con,
+			Vref:      5.0,
+			InputType: PseudoDifferential,
+		}
+
+		v, _ := mcp3204.Read(3)
+		assert.Equal(t, test.v, v)
+
+		mcp3208 := MCP3208{
+			Conn:      con,
+			Vref:      5.0,
+			InputType: PseudoDifferential,
+		}
+
+		v, _ = mcp3208.Read(3)
+		assert.Equal(t, test.v, v)
+
 	}
 }
 
@@ -81,6 +136,9 @@ func ExampleMCP3008() {
 	a := MCP3008{
 		Conn: conn,
 		Vref: 5.0,
+
+		// Optional, default value is SingleEnded.
+		InputType: PseudoDifferential,
 	}
 
 	// Read the voltage on channel 3.
