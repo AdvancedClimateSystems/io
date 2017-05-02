@@ -1,8 +1,13 @@
 # IO
 
-Go packages for pheripheral I/O.
+Go packages for pheripheral I/O. It contains driver for the following chips:
 
-* [spi][spi]
+* SPI
+    * [Microchip](spi/microchip)
+        * MCP3004
+        * MCP3008
+        * MCP3204
+        * MCP3208
 
 ## License
 
@@ -11,4 +16,3 @@ System][acs].
 
 [acs]: http://advancedclimate.nl
 [mpl]: LICENSE
-[spi]: spi/adc

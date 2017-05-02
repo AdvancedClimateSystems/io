@@ -1,9 +1,10 @@
-package adc
+package microchip
 
 import (
 	"fmt"
 	"testing"
 
+	"github.com/advancedclimatesystems/io/adc"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/io/spi"
 	"golang.org/x/exp/io/spi/driver"
@@ -57,19 +58,19 @@ func TestMCP300x(t *testing.T) {
 		mcp3004 := MCP3004{
 			Conn:      con,
 			Vref:      5.0,
-			InputType: SingleEnded,
+			InputType: adc.SingleEnded,
 		}
 
-		v, _ := mcp3004.Read(3)
+		v, _ := mcp3004.Voltage(3)
 		assert.Equal(t, test.v, v)
 
 		mcp3008 := MCP3008{
 			Conn:      con,
 			Vref:      5.0,
-			InputType: SingleEnded,
+			InputType: adc.SingleEnded,
 		}
 
-		v, _ = mcp3008.Read(3)
+		v, _ = mcp3008.Voltage(3)
 		assert.Equal(t, test.v, v)
 	}
 }
@@ -102,19 +103,19 @@ func TestMCP320x(t *testing.T) {
 		mcp3204 := MCP3204{
 			Conn:      con,
 			Vref:      5.0,
-			InputType: PseudoDifferential,
+			InputType: adc.PseudoDifferential,
 		}
 
-		v, _ := mcp3204.Read(3)
+		v, _ := mcp3204.Voltage(3)
 		assert.Equal(t, test.v, v)
 
 		mcp3208 := MCP3208{
 			Conn:      con,
 			Vref:      5.0,
-			InputType: PseudoDifferential,
+			InputType: adc.PseudoDifferential,
 		}
 
-		v, _ = mcp3208.Read(3)
+		v, _ = mcp3208.Voltage(3)
 		assert.Equal(t, test.v, v)
 
 	}
@@ -124,7 +125,7 @@ func ExampleMCP3008() {
 	conn, err := spi.Open(&spi.Devfs{
 		Dev:      "/dev/spidev32766.0",
 		Mode:     spi.Mode0,
-		MaxSpeed: 5000000,
+		MaxSpeed: 3600000,
 	})
 
 	if err != nil {
@@ -138,11 +139,11 @@ func ExampleMCP3008() {
 		Vref: 5.0,
 
 		// Optional, default value is SingleEnded.
-		InputType: PseudoDifferential,
+		InputType: adc.SingleEnded,
 	}
 
-	// Read the voltage on channel 3.
-	v, err := a.Read(3)
+	// Voltage the voltage on channel 3.
+	v, err := a.Voltage(3)
 	if err != nil {
 		panic(fmt.Sprintf("failed to read channel 3 of MCP3008: %s", err))
 	}
