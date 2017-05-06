@@ -1,6 +1,6 @@
 # IO
 
-Go packages for pheripheral I/O. It contains driver for the following chips:
+Go packages for pheripheral I/O. It contains driver for the following IC's:
 
 * SPI
     * [Microchip](spi/microchip)
@@ -8,6 +8,11 @@ Go packages for pheripheral I/O. It contains driver for the following chips:
         * MCP3008
         * MCP3204
         * MCP3208
+* I<sub>2</sub>C
+    * [Maximum Integrated](i2c/max)
+        * MAX5813
+        * MAX5814
+        * MAX5815
 
 ## License
 
