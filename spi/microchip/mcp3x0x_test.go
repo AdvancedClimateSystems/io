@@ -29,6 +29,7 @@ func (c testConn) Configure(k, v int) error { return nil }
 func (c testConn) Tx(w, r []byte) error {
 	return c.tx(w, r)
 }
+
 func (c testConn) Close() error { return nil }
 
 func TestMCP300x(t *testing.T) {

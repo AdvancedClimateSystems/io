@@ -1,8 +1,8 @@
-[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/AdvancedClimateSystems/io/spi/adc)
+[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](https://godoc.org/github.com/AdvancedClimateSystems/io/spi/microchip)
 
 # Microchip
 
-Package microchip implements drivers for a few SPI controlled chips produced by
+Package microchip implements drivers for a few SPI controlled IC's produced by
 [Microchip](http://www.microchip.com/). This package relies on
 [x/exp/io/spi](https://godoc.org/golang.org/x/exp/io/spi).
 
@@ -14,7 +14,7 @@ Currently the package contains drivers for the following ADC:
 * [MCP3204](http://www.microchip.com/wwwproducts/en/MCP3204)
 * [MCP3208](http://www.microchip.com/wwwproducts/en/MCP3208)
 
-Sample usage::
+Sample usage:
 
 ``` go
 package main
