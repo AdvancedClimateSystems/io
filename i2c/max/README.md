@@ -2,7 +2,7 @@
 
 # MAX
 
-Package microchip implements drivers for a few I<sub>2<sub>C controlled IC's
+Package microchip implements drivers for a few I<sub>2</sub>C controlled IC's
 produced by [Maxim Integrated](https://www.maximintegrated.com). This package
 relies on [x/exp/io/spi](https://godoc.org/golang.org/x/exp/io/i2c).
 

@@ -28,6 +28,17 @@ func (c testConn) Tx(w, r []byte) error {
 
 func (c testConn) Close() error { return nil }
 
+func TestNewMax581x(t *testing.T) {
+	max5813, _ := NewMAX5813(nil, 3)
+	assert.Equal(t, 8, max5813.resolution)
+
+	max5814, _ := NewMAX5814(nil, 3)
+	assert.Equal(t, 10, max5814.resolution)
+
+	max5815, _ := NewMAX5815(nil, 3)
+	assert.Equal(t, 12, max5815.resolution)
+}
+
 func TestMAX581xSetVref(t *testing.T) {
 	data := make(chan []byte, 2)
 	c := testConn{
