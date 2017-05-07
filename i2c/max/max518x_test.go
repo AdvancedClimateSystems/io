@@ -1,6 +1,7 @@
 package max
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -99,5 +100,33 @@ func TestMAX581xSetVoltage(t *testing.T) {
 		}
 
 		assert.Equal(t, test.expected, <-data)
+	}
+}
+
+func ExampleMAX5813() {
+	d, err := i2c.Open(&i2c.Devfs{
+		Dev: "/dev/i2c-0",
+	}, 0x1c)
+
+	if err != nil {
+		panic(fmt.Sprintf("failed to open device: %v", err))
+	}
+	defer d.Close()
+
+	// 2.5 is the input reference of the DAC.
+	dac, err := NewMAX5813(d, 2.5)
+
+	if err != nil {
+		panic(fmt.Sprintf("failed to create MAX5813: %v", err))
+	}
+
+	// Set output of channel 1 to 1.3V.
+	if err := dac.SetVoltage(1.3, 1); err != nil {
+		panic(fmt.Sprintf("failed to set voltage: %v", err))
+	}
+
+	// It's also possible to set output of a channel with digital output code.
+	if err := dac.SetInputCode(128, 1); err != nil {
+		panic(fmt.Sprintf("failed to set voltage using output code: %v", err))
 	}
 }

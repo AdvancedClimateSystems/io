@@ -2,9 +2,9 @@
 
 # MAX
 
-Package microchip implements drivers for a few I2C controlled IC's produced by
-[Maxim Integrated](https://www.maximintegrated.com). This package relies on
-[x/exp/io/spi](https://godoc.org/golang.org/x/exp/io/i2c).
+Package microchip implements drivers for a few I<sub>2<sub>C controlled IC's
+produced by [Maxim Integrated](https://www.maximintegrated.com). This package
+relies on [x/exp/io/spi](https://godoc.org/golang.org/x/exp/io/i2c).
 
 Drivers for the following IC's are implemented:
 
@@ -34,8 +34,13 @@ func main() {
 	}
 	defer d.Close()
 
-        // 2.5 is the input reference of the DAC.
-	dac := max.NewMAX5813(d, 2.5)
+
+	// 2.5 is the input reference of the DAC.
+	dac, err := max.NewMAX5813(d, 2.5)
+
+	if err != nil {
+		panic(fmt.Sprintf("failed to create MAX5813: %v", err))
+	}
 
         // Set output of channel 1 to 1.3V.
         if err := dac.SetVoltage(1.3, 1); err != nil {
@@ -43,7 +48,7 @@ func main() {
         }
 
         // It's also possible to set output of a channel with digital output code.
-        if err := dac.SetOutputCode(128, 1); err != nil {
+        if err := dac.SetInutCode(128, 1); err != nil {
 		panic(fmt.Sprintf("failed to set voltage using output code: %v", err))
         }
 }

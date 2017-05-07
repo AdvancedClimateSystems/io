@@ -1,4 +1,11 @@
 // Package max contains drivers for IC's produced by Maxim Integrated.
+//
+// MAX581x
+//
+// The implemententation for the MAX5813, MAX5814 and MAX5815 only implement
+// the REF and CODEn_LOADn commands. The commands CODEn, LOADn, CODEn_LOAD_ALL,
+// POWER, SW_CLEAR, SW_RESET, CONFIG, CODE_ALL, LOAD_ALL and CODE_ALL,
+// CODE_ALL_LOAD_ALL are not implemented.
 package max
 
 import (
@@ -134,4 +141,9 @@ func (m *max581x) SetVref(v float64) error {
 
 	out := []byte{byte(cmd), 0, 0}
 	return m.conn.Write(out)
+}
+
+// Conn returns the connection to the I2C device.
+func (m *max581x) Conn() *i2c.Device {
+	return m.conn
 }
