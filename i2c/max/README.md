@@ -48,7 +48,7 @@ func main() {
         }
 
         // It's also possible to set output of a channel with digital output code.
-        if err := dac.SetInutCode(128, 1); err != nil {
+        if err := dac.SetInputCode(128, 1); err != nil {
 		panic(fmt.Sprintf("failed to set voltage using output code: %v", err))
         }
 }

@@ -15,6 +15,12 @@ import (
 	"golang.org/x/exp/io/i2c"
 )
 
+const (
+	// CODEn_LOADn simultaneously writes data to the selected CODE
+	// register(s) while updating selected DAC register(s).
+	coden_loadn = 0x30
+)
+
 // MAX5813 is a 4 channel DAC with a resolution of 8 bits. The datasheet is
 // here: https://datasheets.maximintegrated.com/en/ds/MAX5813-MAX5815.pdf
 type MAX5813 struct {
@@ -108,8 +114,7 @@ func (m *max581x) SetInputCode(code, channel int) error {
 
 	// The requests is 3 bytes long. Byte 1 is the command, byte 2 and 3
 	// contain the output code.
-	// 0x30 is the CODEn_LOADn command as defined in the datasheet.
-	cmd := byte(0x30 | channel - 1)
+	cmd := byte(coden_loadn | channel)
 	msb := byte(code & 0xFF)
 	n := int(math.Pow(2, float64(m.resolution-8))) - 1
 	lsb := byte(code&n) << uint(8-(m.resolution-8))
@@ -118,10 +123,11 @@ func (m *max581x) SetInputCode(code, channel int) error {
 }
 
 // Vref sets the global reference for all channels. The device can use either
-// an external reference or a internel reference. Allowed values for the
-// internel reference are 2.5V, 2.048V and 4.096V. If this function is called
-// with one of these value the internel reference is set to this value using
-// the REF command. For every other value no command is issued.
+// an external reference or a internel reference, this depends on the wiring
+// of the IC. Allowed values for the internel reference are 2.5V, 2.048V and
+// 4.096V. If this function is called with one of these value the internel
+// reference is set to this value using the REF command. For any other value
+// the channels will use the input reference is equal to the
 func (m *max581x) SetVref(v float64) error {
 	m.vref = v
 	cmd := 0x70
@@ -133,10 +139,6 @@ func (m *max581x) SetVref(v float64) error {
 		cmd = cmd | 6
 	case 4.096:
 		cmd = cmd | 7
-	}
-
-	if cmd == 0x70 {
-		return nil
 	}
 
 	out := []byte{byte(cmd), 0, 0}
