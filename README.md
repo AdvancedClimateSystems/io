@@ -8,7 +8,7 @@ Go packages for pheripheral I/O. It contains driver for the following IC's:
         * MCP3008
         * MCP3204
         * MCP3208
-* I<sub>2</sub>C
+* I<sup>2</sup>C
     * [Maximum Integrated][i2c/max]
         * MAX5813
         * MAX5814

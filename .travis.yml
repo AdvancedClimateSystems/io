@@ -1,0 +1,15 @@
+language: go
+
+go:
+    - 1.8
+
+install:
+    - make install
+
+    # Move the code to the namespace advancedclimatesystems instead of
+    # AdvancedClimateSystems to prevent import problems.
+    - mkdir -p $HOME/gopath/src/github.com/advancedclimatesystems/
+    - mv $HOME/gopath/src/github.com/AdvancedClimateSystems/io $HOME/gopath/src/github.com/advancedclimatesystems/
+    - cd $HOME/gopath/src/github.com/advancedclimatesystems/io
+
+script: make test

@@ -18,7 +18,7 @@ import (
 const (
 	// CODEn_LOADn simultaneously writes data to the selected CODE
 	// register(s) while updating selected DAC register(s).
-	coden_loadn = 0x30
+	codenLoadn = 0x30
 )
 
 // MAX5813 is a 4 channel DAC with a resolution of 8 bits. The datasheet is
@@ -114,7 +114,7 @@ func (m *max581x) SetInputCode(code, channel int) error {
 
 	// The requests is 3 bytes long. Byte 1 is the command, byte 2 and 3
 	// contain the output code.
-	cmd := byte(coden_loadn | channel)
+	cmd := byte(codenLoadn | channel)
 	msb := byte(code & 0xFF)
 	n := int(math.Pow(2, float64(m.resolution-8))) - 1
 	lsb := byte(code&n) << uint(8-(m.resolution-8))

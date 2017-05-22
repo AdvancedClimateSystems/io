@@ -29,13 +29,21 @@ func (c testConn) Tx(w, r []byte) error {
 func (c testConn) Close() error { return nil }
 
 func TestNewMax581x(t *testing.T) {
-	max5813, _ := NewMAX5813(nil, 3)
+	c := testConn{
+		tx: func(w, r []byte) error {
+			return nil
+		},
+	}
+
+	conn, _ := i2c.Open(&testDriver{c}, 0x1)
+
+	max5813, _ := NewMAX5813(conn, 3)
 	assert.Equal(t, 8, max5813.resolution)
 
-	max5814, _ := NewMAX5814(nil, 3)
+	max5814, _ := NewMAX5814(conn, 3)
 	assert.Equal(t, 10, max5814.resolution)
 
-	max5815, _ := NewMAX5815(nil, 3)
+	max5815, _ := NewMAX5815(conn, 3)
 	assert.Equal(t, 12, max5815.resolution)
 }
 
@@ -93,12 +101,12 @@ func TestMAX581xSetVoltage(t *testing.T) {
 		channel    int
 		expected   []byte
 	}{
-		{8, 2.5, 2.5, 1, []byte{0x30, 0xff, 0}},
-		{8, 2.5, 0, 2, []byte{0x31, 0x0, 0}},
-		{8, 5, 2.5, 2, []byte{0x31, 0x7f, 0}},
-		{10, 2.5, 2.5, 2, []byte{0x31, 0xff, 0xc0}},
-		{12, 2.5, 2.5, 3, []byte{0x32, 0xff, 0xf0}},
-		{12, 10, 2, 3, []byte{0x32, 0x33, 0x30}},
+		{8, 2.5, 2.5, 1, []byte{0x31, 0xff, 0}},
+		{8, 2.5, 0, 2, []byte{0x32, 0x0, 0}},
+		{8, 5, 2.5, 2, []byte{0x32, 0x7f, 0}},
+		{10, 2.5, 2.5, 2, []byte{0x32, 0xff, 0xc0}},
+		{12, 2.5, 2.5, 3, []byte{0x33, 0xff, 0xf0}},
+		{12, 10, 2, 3, []byte{0x33, 0x33, 0x30}},
 	}
 
 	for _, test := range tests {
@@ -111,6 +119,7 @@ func TestMAX581xSetVoltage(t *testing.T) {
 		}
 
 		assert.Equal(t, test.expected, <-data)
+
 	}
 }
 
