@@ -1,4 +1,4 @@
-// Package dac defines the interface for Digital Analog Converters.
+// Package dac defines the DAC
 package dac
 
 // DAC is the interface to set the output voltage(s) of a Digital Analog

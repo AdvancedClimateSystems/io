@@ -17,8 +17,9 @@ Go packages for pheripheral I/O. It contains driver for the following IC's:
         * MAX5815
     * [Microchip][i2c/microchip]
         * MCP4725
-
     * [Texas Instruments][i2c/ti]
+        * ADS1100
+        * ADS1110
         * DAC5578
         * DAC6578
         * DAC7578

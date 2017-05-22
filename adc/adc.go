@@ -1,3 +1,4 @@
+// Package adc defines the ADC interface for Analog Digital Converters.
 package adc
 
 // InputType defines how an ADC samples the input signal. A single-ended input
@@ -25,6 +26,7 @@ const (
 // of a channel.
 type ADC interface {
 	// OutputCode queries the channel and returns its digital output code.
+	// This should be the raw value. If exists, PGA should not be applied.
 	OutputCode(channel int) (int, error)
 	// Voltage queries the channel of an ADC and returns its voltage.
 	Voltage(channel int) (float64, error)
