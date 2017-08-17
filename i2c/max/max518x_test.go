@@ -4,38 +4,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/advancedclimatesystems/io/iotest"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/io/i2c"
-	"golang.org/x/exp/io/i2c/driver"
 )
 
-type testDriver struct {
-	conn testConn
-}
-
-func (d testDriver) Open(_ int, _ bool) (driver.Conn, error) {
-	return d.conn, nil
-}
-
-// testConn is a mocked connection that implements the spi.Conn interface.
-type testConn struct {
-	tx func(w, r []byte) error
-}
-
-func (c testConn) Tx(w, r []byte) error {
-	return c.tx(w, r)
-}
-
-func (c testConn) Close() error { return nil }
-
 func TestNewMax581x(t *testing.T) {
-	c := testConn{
-		tx: func(w, r []byte) error {
-			return nil
-		},
-	}
-
-	conn, _ := i2c.Open(&testDriver{c}, 0x1)
+	conn, _ := i2c.Open(iotest.NewI2CDriver(iotest.NewI2CConn()), 0x1)
 
 	max5813, _ := NewMAX5813(conn, 3)
 	assert.Equal(t, 8, max5813.resolution)
@@ -49,14 +24,13 @@ func TestNewMax581x(t *testing.T) {
 
 func TestMAX581xSetVref(t *testing.T) {
 	data := make(chan []byte, 2)
-	c := testConn{
-		tx: func(w, r []byte) error {
-			data <- w
-			return nil
-		},
-	}
+	c := iotest.NewI2CConn()
+	c.TxFunc(func(w, _ []byte) error {
+		data <- w
+		return nil
+	})
 
-	conn, _ := i2c.Open(&testDriver{c}, 0x1)
+	conn, _ := i2c.Open(iotest.NewI2CDriver(c), 0x1)
 
 	m := max581x{
 		conn:       conn,
@@ -81,15 +55,13 @@ func TestMAX581xSetVref(t *testing.T) {
 
 func TestMAX581xSetVoltage(t *testing.T) {
 	data := make(chan []byte, 2)
-	c := testConn{
-		tx: func(w, r []byte) error {
-			data <- w
-			return nil
-		},
-	}
+	c := iotest.NewI2CConn()
+	c.TxFunc(func(w, _ []byte) error {
+		data <- w
+		return nil
+	})
 
-	conn, _ := i2c.Open(&testDriver{c}, 0x1)
-
+	conn, _ := i2c.Open(iotest.NewI2CDriver(c), 0x1)
 	m := max581x{
 		conn: conn,
 	}
@@ -133,7 +105,7 @@ func ExampleMAX5813() {
 	}
 	defer d.Close()
 
-	// 2.5 is the input reference of the DAC.
+	// 2.5V is the input reference of the DAC.
 	dac, err := NewMAX5813(d, 2.5)
 
 	if err != nil {
