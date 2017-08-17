@@ -35,7 +35,7 @@ func main() {
 	defer d.Close()
 
 
-	// 2.5 is the input reference of the DAC.
+	// 2.5V is the input reference of the DAC.
 	dac, err := max.NewMAX5813(d, 2.5)
 
 	if err != nil {

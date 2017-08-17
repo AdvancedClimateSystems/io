@@ -13,6 +13,8 @@ Go packages for pheripheral I/O. It contains driver for the following IC's:
         * MAX5813
         * MAX5814
         * MAX5815
+    * [Microchip][i2c/microchip]
+        * MCP4725
 
 ## License
 
@@ -22,4 +24,5 @@ System][acs].
 [acs]: http://advancedclimate.nl
 [mpl]: LICENSE
 [i2c/max]: https://godoc.org/github.com/AdvancedClimateSystems/io/i2c/max
+[i2c/microchip]: https://godoc.org/github.com/AdvancedClimateSystems/io/i2c/microchip
 [spi/microchip]: https://godoc.org/github.com/AdvancedClimateSystems/io/spi/microchip

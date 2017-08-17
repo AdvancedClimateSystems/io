@@ -1,6 +1,5 @@
 // Package microchip implements drivers for a few SPI controlled chips produced
-// by Microchip This package relies on
-// https://godoc.org/golang.org/x/exp/io/spi.
+// by Microchip.
 package microchip
 
 import (
