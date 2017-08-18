@@ -12,4 +12,4 @@ install:
     - mv $HOME/gopath/src/github.com/AdvancedClimateSystems/io $HOME/gopath/src/github.com/advancedclimatesystems/
     - cd $HOME/gopath/src/github.com/advancedclimatesystems/io
 
-script: make test
+script: make lint && make test

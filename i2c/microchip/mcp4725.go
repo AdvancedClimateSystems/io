@@ -16,7 +16,7 @@ import (
 //
 // The MCP4725 device address contains four fixed bits (1100 = device code) and
 // three address bits (A2, A1, A0). The A2 and A1 bits are hard-wired during
-// manufactoring, and the A0 bit is determined by the logic state of AO pin.
+// manufacturing, and the A0 bit is determined by the logic state of AO pin.
 //
 // The MCP4725 has 2 modes of operation: normal mode and power-down mode. This
 // driver only supports normal mode.

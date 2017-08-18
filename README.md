@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/AdvancedClimateSystems/io.svg?branch=master)](https://travis-ci.org/AdvancedClimateSystems/io)
+
 # IO
 
 Go packages for pheripheral I/O. It contains driver for the following IC's:
