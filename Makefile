@@ -37,7 +37,7 @@ lint:   ## Check code using various linters and static checkers.
 test:   ## Run unit tests and print test coverage.
 	@touch .coverage.out
 	@for package in $(PACKAGES); do \
-	    go test -coverprofile .coverage.out $$package && go tool cover -func=.coverage.out || exit 1; \
+	    go test -race -coverprofile .coverage.out $$package && go tool cover -func=.coverage.out || exit 1; \
 	done
 
 
