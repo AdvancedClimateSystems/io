@@ -115,9 +115,8 @@ func (m *max581x) SetInputCode(code, channel int) error {
 	// The requests is 3 bytes long. Byte 1 is the command, byte 2 and 3
 	// contain the output code.
 	cmd := byte(codenLoadn | channel)
-	msb := byte(code & 0xFF)
-	n := int(math.Pow(2, float64(m.resolution-8))) - 1
-	lsb := byte(code&n) << uint(8-(m.resolution-8))
+	msb := byte((code >> uint(m.resolution-8)) & 0xFF)
+	lsb := byte((code << uint(8-(m.resolution-8))) & 0xFF)
 
 	return m.conn.Write([]byte{cmd, msb, lsb})
 }
