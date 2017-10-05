@@ -148,5 +148,6 @@ func ExampleMCP3008() {
 	if err != nil {
 		panic(fmt.Sprintf("failed to read channel 3 of MCP3008: %s", err))
 	}
+
 	fmt.Printf("read %f Volts from channel 3", v)
 }

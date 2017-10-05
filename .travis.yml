@@ -10,7 +10,12 @@ install:
     # Move the code to the namespace advancedclimatesystems instead of
     # AdvancedClimateSystems to prevent import problems.
     - mkdir -p $HOME/gopath/src/github.com/advancedclimatesystems/
-    - mv $HOME/gopath/src/github.com/AdvancedClimateSystems/io $HOME/gopath/src/github.com/advancedclimatesystems/
+    - mv -v $HOME/gopath/src/github.com/AdvancedClimateSystems/io $HOME/gopath/src/github.com/advancedclimatesystems/
     - cd $HOME/gopath/src/github.com/advancedclimatesystems/io
+
+    # For some reason our package is installed in it's own vendor/ folder.
+    # The tests aren't ran against the fetched source code, but against the
+    # code in vendor/. Remove this folder to prevent it from happening.
+    - rm -r vendor/github.com/advancedclimatesystems/io
 
 script: make lint && make test

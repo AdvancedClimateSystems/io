@@ -42,13 +42,24 @@ func (d I2CDriver) Open(_ int, _ bool) (driver.Conn, error) {
 
 // I2CConn implements the driver.Conn interface.
 type I2CConn struct {
-	tx    func(w, r []byte) error
-	close func() error
+	tx    *tx
+	close *close
+}
+
+type tx struct {
+	f func(w, r []byte) error
+}
+
+type close struct {
+	f func() error
 }
 
 // NewI2CConn creates a new I2CConn.
 func NewI2CConn() I2CConn {
-	c := I2CConn{}
+	c := I2CConn{
+		tx:    &tx{},
+		close: &close{},
+	}
 
 	c.TxFunc(func(_, _ []byte) error {
 		return nil
@@ -63,20 +74,20 @@ func NewI2CConn() I2CConn {
 
 // Tx calls the TxFunc.
 func (c I2CConn) Tx(w, r []byte) error {
-	return c.tx(w, r)
+	return c.tx.f(w, r)
 }
 
 // TxFunc sets TxFunc which is called when Tx is called.
 func (c *I2CConn) TxFunc(f func(w, r []byte) error) {
-	c.tx = f
+	c.tx.f = f
 }
 
 // Close calls the CloseFunc.
 func (c I2CConn) Close() error {
-	return c.close()
+	return c.close.f()
 }
 
 // CloseFunc sets the CloseFunc. CloseFunc is called when Close is called.
 func (c *I2CConn) CloseFunc(f func() error) {
-	c.close = f
+	c.close.f = f
 }
