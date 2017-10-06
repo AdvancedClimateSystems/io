@@ -4,12 +4,19 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/advancedclimatesystems/io/dac"
 	"github.com/advancedclimatesystems/io/iotest"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/exp/io/i2c"
 )
 
-func TestNewMax581x(t *testing.T) {
+func TestDACinterface(t *testing.T) {
+	assert.Implements(t, (*dac.DAC)(nil), new(MAX5813))
+	assert.Implements(t, (*dac.DAC)(nil), new(MAX5814))
+	assert.Implements(t, (*dac.DAC)(nil), new(MAX5815))
+}
+
+func TestNewMAX581x(t *testing.T) {
 	conn, _ := i2c.Open(iotest.NewI2CDriver(iotest.NewI2CConn()), 0x1)
 
 	max5813, _ := NewMAX5813(conn, 3)
@@ -98,6 +105,75 @@ func TestMAX581xSetVoltage(t *testing.T) {
 		assert.Equal(t, test.expected, <-data)
 
 	}
+}
+
+func TestMAX581xConn(t *testing.T) {
+	c, _ := i2c.Open(iotest.NewI2CDriver(iotest.NewI2CConn()), 0x1)
+	dac, _ := NewMAX5813(c, 2.048)
+	assert.Equal(t, c, dac.Conn())
+}
+
+// TestMAX581xSetInputCodeWithInvalidChannel calls dac.SetInputCode with a
+// input code that lies outside the range of the DAC.
+func TestMAX581xSetInputCodeWithInvalidCode(t *testing.T) {
+	var tests = []struct {
+		dac  dac.DAC
+		code int
+	}{
+		{MAX5813{}, -1},
+		{MAX5813{}, 256},
+		{MAX5814{}, -1},
+		{MAX5814{}, 1024},
+		{MAX5815{}, -1},
+		{MAX5815{}, 4096},
+	}
+
+	for _, test := range tests {
+		assert.EqualError(
+			t,
+			test.dac.SetInputCode(test.code, 1),
+			fmt.Sprintf("digital input code %d is out of range of 0 <= code < 1", test.code))
+	}
+}
+
+// TestMAX581xSetInputCodeWithInvalidChannel calls dac.SetInputCode with a
+// channel that isn't in the range of the DAC.
+func TestMAX581xSetInputCodeWithInvalidChannel(t *testing.T) {
+	dac := max581x{}
+
+	for _, channel := range []int{-1, 4} {
+		assert.EqualError(
+			t,
+			dac.SetInputCode(512, channel),
+			fmt.Sprintf("%d is not a valid channel", channel))
+	}
+}
+
+// TestMAX581xWithFailingConnection test if all DAC's return errors when the
+// connection fails.
+func TestMAX581xWithFailingConnection(t *testing.T) {
+	c := iotest.NewI2CConn()
+	c.TxFunc(func(w, _ []byte) error {
+		return fmt.Errorf("som error occured")
+	})
+	conn, _ := i2c.Open(iotest.NewI2CDriver(c), 0x1)
+
+	_, err := NewMAX5813(conn, 2.048)
+	assert.NotNil(t, err)
+
+	_, err = NewMAX5814(conn, 2.048)
+	assert.NotNil(t, err)
+
+	_, err = NewMAX5815(conn, 2.048)
+	assert.NotNil(t, err)
+
+	dac := max581x{
+		conn:       conn,
+		vref:       2.048,
+		resolution: 8,
+	}
+
+	assert.NotNil(t, dac.SetInputCode(512, 1))
 }
 
 func ExampleMAX5813() {

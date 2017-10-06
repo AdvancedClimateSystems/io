@@ -95,21 +95,21 @@ type max581x struct {
 
 // SetVoltage set output voltage of channel. Using the Vref the input code is
 // calculated and then SetInputCode is called.
-func (m *max581x) SetVoltage(v float64, channel int) error {
+func (m max581x) SetVoltage(v float64, channel int) error {
 	code := v * (math.Pow(2, float64(m.resolution)) - 1) / m.vref
 	return m.SetInputCode(int(code), channel)
 }
 
 // SetInputCode writes the digital input code to the DAC using the CODEn_LOADn
 // command.
-func (m *max581x) SetInputCode(code, channel int) error {
+func (m max581x) SetInputCode(code, channel int) error {
 	if channel < 0 || channel > 3 {
 		return fmt.Errorf("%d is not a valid channel", channel)
 	}
 
 	max := int(math.Pow(2, float64(m.resolution)))
 	if code < 0 || code >= max {
-		return fmt.Errorf("digital input code %d is out of range of 0 <= code < %d ", code, max)
+		return fmt.Errorf("digital input code %d is out of range of 0 <= code < %d", code, int(max))
 	}
 
 	// The requests is 3 bytes long. Byte 1 is the command, byte 2 and 3
