@@ -122,6 +122,60 @@ func TestMCP320x(t *testing.T) {
 	}
 }
 
+// TestWithInvalidChannels calls adc.OutputCode with a channel that isn't in
+// the range of the ADC.
+func TestMCP3x0xWithInvalidChannels(t *testing.T) {
+	var tests = []struct {
+		adc     adc.ADC
+		channel int
+	}{
+		{MCP3004{}, -1},
+		{MCP3004{}, 4},
+		{MCP3008{}, -1},
+		{MCP3008{}, 8},
+		{MCP3204{}, -1},
+		{MCP3204{}, 4},
+		{MCP3208{}, -1},
+		{MCP3208{}, 8},
+	}
+
+	for _, test := range tests {
+		_, err := test.adc.OutputCode(test.channel)
+		assert.NotNil(t, err)
+	}
+}
+
+// TestMCP3x0xWithFailingConnection test if all ADC's return errors when the
+// connection fails.
+func TestMCP3x0xWithFailingConnection(t *testing.T) {
+	c := testConn{
+		tx: func(w, r []byte) error {
+			return fmt.Errorf("some error occured")
+		},
+	}
+	con, _ := spi.Open(&testDriver{c})
+
+	adcs := []adc.ADC{
+		MCP3004{
+			Conn: con,
+		},
+		MCP3008{
+			Conn: con,
+		},
+		MCP3204{
+			Conn: con,
+		},
+		MCP3208{
+			Conn: con,
+		},
+	}
+
+	for _, adc := range adcs {
+		_, err := adc.Voltage(3)
+		assert.NotNil(t, err)
+	}
+}
+
 func ExampleMCP3008() {
 	conn, err := spi.Open(&spi.Devfs{
 		Dev:      "/dev/spidev32766.0",
