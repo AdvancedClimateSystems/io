@@ -22,7 +22,7 @@ type MCP3004 struct {
 
 // OutputCode queries the channel and returns its digital output code.
 func (m MCP3004) OutputCode(channel int) (int, error) {
-	if channel < 0 || channel > 4 {
+	if channel < 0 || channel > 3 {
 		return 0, fmt.Errorf("channel %d is invalid, ADC has only 4 channels", channel)
 	}
 
@@ -150,7 +150,7 @@ type MCP3204 struct {
 
 // OutputCode queries the channel and returns its digital output code.
 func (m MCP3204) OutputCode(channel int) (int, error) {
-	if channel < 0 || channel > 4 {
+	if channel < 0 || channel > 3 {
 		return 0, fmt.Errorf("channel %d is invalid, ADC has only 4 channels", channel)
 	}
 
