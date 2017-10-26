@@ -23,6 +23,9 @@ Go packages for pheripheral I/O. It contains driver for the following IC's:
         * DAC5578
         * DAC6578
         * DAC7578
+* GPIO
+    * [Acme Systems][gpio/acme]
+        * Aria G25
 
 ## License
 
@@ -35,3 +38,4 @@ System][acs].
 [i2c/microchip]: https://godoc.org/github.com/AdvancedClimateSystems/io/i2c/microchip
 [i2c/ti]: https://godoc.org/github.com/AdvancedClimateSystems/io/i2c/ti
 [spi/microchip]: https://godoc.org/github.com/AdvancedClimateSystems/io/spi/microchip
+[gpio/acme]: https://godoc.org/github.com/AdvancedClimateSystems/io/gpio/acme
