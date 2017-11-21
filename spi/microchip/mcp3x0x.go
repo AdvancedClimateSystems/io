@@ -217,7 +217,7 @@ func read12(conn *spi.Device, channel int, inputType adc.InputType) (int, error)
 	// is done using single-ended or differential input mode. 0 means
 	// differential, 1 means single-ended.
 	if inputType == adc.SingleEnded {
-		cmd = 1
+		cmd = cmd | 1
 	}
 	// The bit is then shifted 3 times and the number is incremented with
 	// a 3 bits channel.
