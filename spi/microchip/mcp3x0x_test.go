@@ -176,6 +176,32 @@ func TestMCP3x0xWithFailingConnection(t *testing.T) {
 	}
 }
 
+func TestRead12(t *testing.T) {
+	tests := []struct {
+		channel     int
+		inputType   adc.InputType
+		expectedCmd []byte
+	}{
+		{1, adc.PseudoDifferential, []byte{4, 64, 0}},
+		{1, adc.SingleEnded, []byte{6, 64, 0}},
+		{3, adc.PseudoDifferential, []byte{4, 192, 0}},
+		{3, adc.SingleEnded, []byte{6, 192, 0}},
+	}
+
+	for _, test := range tests {
+		c := testConn{
+			tx: func(w, r []byte) error {
+				assert.Equal(t, test.expectedCmd, w)
+				return nil
+			},
+		}
+
+		con, _ := spi.Open(&testDriver{c})
+
+		_, _ = read12(con, test.channel, test.inputType)
+	}
+}
+
 func ExampleMCP3008() {
 	conn, err := spi.Open(&spi.Devfs{
 		Dev:      "/dev/spidev32766.0",
