@@ -215,6 +215,7 @@ func (p *Pin) SetEdge(e Edge, f EdgeEvent) error {
 	callback := func() {
 		f(p)
 	}
+	p.w.AddFile(valF)
 	if err = p.w.AddEvent(int(valF.Fd()), callback); err != nil {
 		return err
 	}

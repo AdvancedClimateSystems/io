@@ -4,6 +4,7 @@ package gpio
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"syscall"
 )
@@ -17,7 +18,8 @@ type watchCallback struct {
 type Watcher interface {
 	Watch() error
 	StopWatch()
-	AddEvent(fpntr int, callback func()) error
+	AddEvent(fpnt int, callback func()) error
+	AddFile(file *os.File)
 	Close() error
 }
 
@@ -30,8 +32,12 @@ type watch struct {
 	// File descriptor for epoll
 	fd        int
 	callbacks map[int]*watchCallback
-	run       bool
-	m         sync.RWMutex
+
+	// Keep a reference to the files, otherwise it might get garbage collected,
+	// which causes epoll not recieveing any events.
+	files []*os.File
+	run   bool
+	m     sync.RWMutex
 }
 
 // NewWatcher Creates a new Watcher.
@@ -63,17 +69,17 @@ func newWatch(sysH syscaller) (*watch, error) {
 // Watch handles incoming epoll events.
 func (w *watch) Watch() error {
 	w.run = true
-	for w.run {
-		// maxEvents is the maximum of events handled at once.
-		w.m.RLock()
-		maxEvents := len(w.callbacks)
-		w.m.RUnlock()
+	// maxEvents is the maximum of events handled at once.
+	w.m.RLock()
+	maxEvents := len(w.callbacks)
+	w.m.RUnlock()
 
-		if maxEvents == 0 {
-			// At least one event must be handeld.
-			maxEvents = 1
-		}
-		events := make([]syscall.EpollEvent, maxEvents)
+	if maxEvents == 0 {
+		// At least one event must be handeld.
+		maxEvents = 1
+	}
+	events := make([]syscall.EpollEvent, maxEvents)
+	for w.run {
 		// The last argument is the timeout, the timeout specifies how long the call will block,
 		// Setting a timeout of -1 will make it block indefinitely.
 		numEvents, err := w.sysH.EpollWait(w.fd, events, -1)
@@ -115,7 +121,16 @@ func (w *watch) handleEvent(fd int) {
 
 func (w *watch) addCallback(fpntr int, callback func()) {
 	w.m.Lock()
-	w.callbacks[fpntr] = &watchCallback{true, callback}
+	w.callbacks[fpntr] = &watchCallback{
+		true,
+		callback,
+	}
+	w.m.Unlock()
+}
+
+func (w *watch) AddFile(file *os.File) {
+	w.m.Lock()
+	w.files = append(w.files, file)
 	w.m.Unlock()
 }
 
