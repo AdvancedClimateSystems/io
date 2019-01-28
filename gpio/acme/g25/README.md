@@ -14,7 +14,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/advancedclimatesystems/io/acme/g25"
+	"github.com/advancedclimatesystems/io/gpio/acme/g25"
 	"github.com/advancedclimatesystems/io/gpio"
 )
 
