@@ -31,8 +31,8 @@ func TestMCP4725WithValidVoltages(t *testing.T) {
 		voltage  float64
 		expected []byte
 	}{
-		{2.7, 1.73, []byte{0xa, 0x40}},
-		{2.7, 2.6999, []byte{0x0f, 0xff}},
+		{2.7, 1.73, []byte{0xa, 0x3f}},
+		{2.7, 2.6999, []byte{0x0f, 0xfe}},
 		{2.7, 0, []byte{0x0, 0x0}},
 		{5.5, 1.22, []byte{0x3, 0x8c}},
 		{5.5, 0.73, []byte{0x2, 0x1f}},
