@@ -43,7 +43,7 @@ func NewMCP4725(conn *i2c.Device, vref float64) (*MCP4725, error) {
 // the dac.DAC interface. Because the MCP4725 has only 1 channel it's only
 // allowed value is 1.
 func (m MCP4725) SetVoltage(v float64, channel int) error {
-	code := v * 4096 / m.vref
+	code := v * 4095 / m.vref
 	return m.SetInputCode(int(code), channel)
 }
 
