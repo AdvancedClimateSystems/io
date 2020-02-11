@@ -20,7 +20,7 @@ func NewPin(id int) (gpio.GPIO, error) {
 
 	// The file created by export is always called pio, followed by ic pin ID,
 	// but without the first character. So exporting N2 gives an file called pioC0.
-	gpio := gpio.NewPin(id, fmt.Sprintf("%v", id), w)
+	gpio := gpio.NewPin(id, fmt.Sprintf("gpio%v", id), w)
 	if err := gpio.Export(); err != nil {
 		return nil, err
 	}
