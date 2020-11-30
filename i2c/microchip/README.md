@@ -24,8 +24,8 @@ import (
 
 func main() {
 	d, err := i2c.Open(&i2c.Devfs{
-		Dev: "/dev/i2c-0",
-	}, 0x61)
+		Dev: "/dev/i2c-1",
+	}, 0x60)
 
 	if err != nil {
 		panic(fmt.Sprintf("failed to open device: %v", err))
